@@ -30,12 +30,16 @@ The Application must write a de- duplicated list of these numbers to a log file 
    the Application must disconnect all clients and perform a clean shutdown as quickly as possible.
 
 ## TODO:
+
 - [ ] Readme
     - Build it
     - Running test
+    - Explain manual step about how to run it.
 - [ ] Testing
     - Performance
 - [ ] CI
 - [ ] Static analysis
 - [ ] Review synchronization between threads
-- [ ]
+- [ ] Documentation
+    - Create a siteMap of the status of the threads 
+    

@@ -6,6 +6,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class Server {
     private static final int PORT = 4000;
@@ -14,7 +15,7 @@ public class Server {
     private ExecutorService executorService;
     private ServerSocket serverSocket;
     private LoggingThread loggingThread;
-    private boolean continueLoop;
+    private volatile boolean continueLoop;
 
     public Server() {
         continueLoop = true;
@@ -30,7 +31,7 @@ public class Server {
     }
 
     public void start() {
-        executorService.submit(loggingThread);
+        executorService.execute(loggingThread);
 
         while (continueLoop) {
             SocketHandler socketHandler;
@@ -39,14 +40,22 @@ public class Server {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            executorService.submit(socketHandler);
+            executorService.execute(socketHandler);
         }
     }
 
     public void shutdown() {
-        blockingQueue.clear();
-        loggingThread.close();
+        continueLoop = false;
+
+        loggingThread.shutdown();
         executorService.shutdown();
+        try {
+            if (!executorService.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+                executorService.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executorService.shutdownNow();
+        }
         System.exit(0);
     }
 }
