@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 
 public class SocketHandler implements Runnable {
-    private static final String TERMINATE = "terminate";
+    private static final String TERMINATE_COMMAND = "terminate";
     private static final int EXPECTED_INPUT_LENGTH = 9;
     private final Server server;
     BufferedReader in;
@@ -44,8 +44,8 @@ public class SocketHandler implements Runnable {
                 System.out.println("ERROR: Input is null");
                 break;
             }
-            if (inputString.equals(TERMINATE)) {
-                System.out.println("INFO: '" + TERMINATE + "' has been requested");
+            if (inputString.equals(TERMINATE_COMMAND)) {
+                System.out.println("INFO: '" + TERMINATE_COMMAND + "' has been requested");
                 server.shutdown();
                 break;
             }

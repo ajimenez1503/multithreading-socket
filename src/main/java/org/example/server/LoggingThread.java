@@ -1,5 +1,7 @@
 package org.example.server;
 
+import lombok.Getter;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,9 +21,8 @@ public class LoggingThread implements Runnable {
     private BitSet bitSet;
     private BlockingQueue<Integer> blockingQueue;
 
-    private int uniqueCount;
-    private int duplicateCount;
-    private int uniqueTotal;
+    @Getter
+    private Statistic statistic;
     private Timer timer;
     private FileWriter file;
     private BufferedWriter out;
@@ -35,9 +36,7 @@ public class LoggingThread implements Runnable {
         bitSet = new BitSet(1000000000);
         this.blockingQueue = blockingQueue;
 
-        uniqueCount = 0;
-        duplicateCount = 0;
-        uniqueTotal = 0;
+        statistic = new Statistic();
 
         timer = new Timer();
         timer.scheduleAtFixedRate(new Summary(), 0, WAIT);
@@ -93,13 +92,9 @@ public class LoggingThread implements Runnable {
             }
             synchronized (lock) {
                 if (bitSet.get(number)) {
-                    duplicateCount++;
+                    statistic.incrementDuplicateCount();
                     continue;
                 }
-
-                bitSet.set(number);
-                uniqueCount++;
-                uniqueTotal++;
 
                 try {
                     out.write(number.toString());
@@ -108,6 +103,10 @@ public class LoggingThread implements Runnable {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+
+                bitSet.set(number);
+                statistic.incrementUniqueCount();
+                statistic.incrementUniqueTotal();
             }
         }
         runFunctionHasFinished = true;
@@ -118,10 +117,9 @@ public class LoggingThread implements Runnable {
         @Override
         public void run() {
             synchronized (lock) {
-                System.out.printf("Received %d unique numbers, %d duplicates. Unique total: %d\n",
-                        uniqueCount, duplicateCount, uniqueTotal);
-                uniqueCount = 0;
-                duplicateCount = 0;
+                System.out.printf(statistic.toString());
+                statistic.resetUniqueCount();
+                statistic.resetDuplicateCount();
             }
         }
     }

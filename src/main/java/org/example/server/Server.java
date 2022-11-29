@@ -44,6 +44,10 @@ public class Server {
         }
     }
 
+    public Statistic getStatistic() {
+        return loggingThread.getStatistic();
+    }
+
     public void shutdown() {
         continueLoop = false;
 
@@ -56,6 +60,5 @@ public class Server {
         } catch (InterruptedException e) {
             executorService.shutdownNow();
         }
-        System.exit(0);
     }
 }
