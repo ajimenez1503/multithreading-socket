@@ -1,3 +1,5 @@
+import lombok.Getter;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -7,6 +9,7 @@ public class Client {
     private static final String IP_LOCAL_HOST = "localhost";
     private static final String TERMINATE_COMMAND = "terminate";
 
+    @Getter
     private Socket socket;
     private PrintWriter out;
 

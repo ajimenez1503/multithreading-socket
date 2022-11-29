@@ -1,5 +1,7 @@
 package org.example.server;
 
+import lombok.Getter;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.concurrent.BlockingQueue;
@@ -17,8 +19,12 @@ public class Server {
     private LoggingThread loggingThread;
     private volatile boolean continueLoop;
 
+    @Getter
+    private boolean isShutDown;
+
     public Server() {
         continueLoop = true;
+        isShutDown = false;
         blockingQueue = new LinkedBlockingQueue<>();
         // Number of thread: MAX_CLIENTS + 1 (for logging into the file)
         executorService = Executors.newFixedThreadPool(MAX_CLIENTS + 1);
@@ -38,7 +44,11 @@ public class Server {
             try {
                 socketHandler = new SocketHandler(serverSocket.accept(), blockingQueue, this);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                // If 'isShutDown' socket is already closed.
+                if (continueLoop && !isShutDown) {
+                    throw new RuntimeException(e);
+                }
+                return;
             }
             executorService.execute(socketHandler);
         }
@@ -60,5 +70,13 @@ public class Server {
         } catch (InterruptedException e) {
             executorService.shutdownNow();
         }
+
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        isShutDown = true;
     }
 }

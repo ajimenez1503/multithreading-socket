@@ -78,6 +78,7 @@ public class IntegrationTest {
         Integer number = getRandomNumber(MIN_NUMBER, MAX_NUMBER);
         client.sendNumber(number);
         await().until(() -> server.getStatistic().getUniqueTotal() == 1);
+        assertEquals(0, server.getStatistic().getDuplicateTotal());
 
         // Close client and server
         client.shutdown();
@@ -86,6 +87,79 @@ public class IntegrationTest {
 
         // Then check log file
         assertTrue(checkContentFile(number.toString()));
+    }
+
+    @Test
+    void givenServerAndClient_whenSendTerminate_thenServerShutDown() {
+        // Given server
+        Server server = new Server();
+        assertNotNull(server);
+        Runnable runnable = () -> {
+            server.start();
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
+
+        // Given client
+        Client client = new Client();
+
+        // When send terminate
+        client.sendTerminateCommand();
+        await().until(() -> server.isShutDown());
+
+        // Close client and server
+        client.shutdown();
+        thread.interrupt();
+    }
+
+    @Test
+    void givenServerAndClient_whenSendingAMessageWithout9digits_thenClientIsShutDown() {
+        // Given server
+        Server server = new Server();
+        assertNotNull(server);
+        Runnable runnable = () -> {
+            server.start();
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
+
+        // Given client
+        Client client = new Client();
+
+        // When send number
+        Integer number = getRandomNumber(MIN_NUMBER, MAX_NUMBER);
+        client.send("invalid message");
+        await().until(() -> client.getSocket().isConnected());
+
+        // Close client and server
+        client.shutdown();
+        server.shutdown();
+        thread.interrupt();
+    }
+
+    @Test
+    void givenServerAndClient_whenSendingAnEmptyMessage_thenClientIsShutDown() {
+        // Given server
+        Server server = new Server();
+        assertNotNull(server);
+        Runnable runnable = () -> {
+            server.start();
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
+
+        // Given client
+        Client client = new Client();
+
+        // When send number
+        Integer number = getRandomNumber(MIN_NUMBER, MAX_NUMBER);
+        client.send("");
+        await().until(() -> client.getSocket().isConnected());
+
+        // Close client and server
+        client.shutdown();
+        server.shutdown();
+        thread.interrupt();
     }
 
 }
