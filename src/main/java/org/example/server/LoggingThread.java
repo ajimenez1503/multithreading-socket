@@ -92,7 +92,7 @@ public class LoggingThread implements Runnable {
             }
             synchronized (lock) {
                 if (bitSet.get(number)) {
-                    statistic.incrementDuplicateCount();
+                    statistic.incrementDuplicate();
                     continue;
                 }
 
@@ -105,8 +105,7 @@ public class LoggingThread implements Runnable {
                 }
 
                 bitSet.set(number);
-                statistic.incrementUniqueCount();
-                statistic.incrementUniqueTotal();
+                statistic.incrementUnique();
             }
         }
         runFunctionHasFinished = true;

@@ -53,24 +53,16 @@ public class IntegrationTest {
     }
 
     private boolean checkContentFile(String expected) {
-        String data;
-        System.out.println(expected);
+        openFile();
+        boolean isPresent = reader.lines().filter(line -> line.equals(expected)).findFirst().isPresent();
+        closeFile();
 
-        try {
-            while ((data = reader.readLine()) != null) {
-                System.out.println(data);
-                if (data.equals(expected)) {
-                    return true;
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return false;
+        return isPresent;
     }
 
     @Test
     void givenServerAndClient_whenSendNumber_thenCheckLogFile() {
+        // Given server
         Server server = new Server();
         assertNotNull(server);
         Runnable runnable = () -> {
@@ -79,20 +71,21 @@ public class IntegrationTest {
         Thread thread = new Thread(runnable);
         thread.start();
 
+        // Given client
         Client client = new Client();
 
+        // When send number
         Integer number = getRandomNumber(MIN_NUMBER, MAX_NUMBER);
         client.sendNumber(number);
-
         await().until(() -> server.getStatistic().getUniqueTotal() == 1);
 
+        // Close client and server
         client.shutdown();
         server.shutdown();
         thread.interrupt();
 
-        openFile();
+        // Then check log file
         assertTrue(checkContentFile(number.toString()));
-        closeFile();
     }
 
 }

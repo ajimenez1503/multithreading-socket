@@ -34,15 +34,13 @@ public class SocketHandler implements Runnable {
         int inputNumber;
 
         while (!shutdown) {
-            System.out.println("Adding numbers from blockingQueue");
             try {
                 inputString = in.readLine();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             if (inputString == null) {
-                System.out.println("ERROR: Input is null");
-                break;
+                continue;
             }
             if (inputString.equals(TERMINATE_COMMAND)) {
                 System.out.println("INFO: '" + TERMINATE_COMMAND + "' has been requested");

@@ -9,19 +9,18 @@ import lombok.Setter;
 @Getter
 public class Statistic {
     private int uniqueCount;
-    private int duplicateCount;
     private int uniqueTotal;
+    private int duplicateCount;
+    private int duplicateTotal;
 
-    public void incrementUniqueCount() {
+    public void incrementUnique() {
         uniqueCount++;
-    }
-
-    public void incrementDuplicateCount() {
-        duplicateCount++;
-    }
-
-    public void incrementUniqueTotal() {
         uniqueTotal++;
+    }
+
+    public void incrementDuplicate() {
+        duplicateCount++;
+        duplicateTotal++;
     }
 
     public void resetUniqueCount() {
