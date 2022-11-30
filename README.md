@@ -1,3 +1,6 @@
+![Build](https://github.com/softwarejimenez/multithreading-socket/actions/workflows/ci.yml/badge.svg)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=softwarejimenez_multithreading-socket&metric=alert_status)](https://sonarcloud.io/dashboard?id=softwarejimenez_multithreading-socket)
+
 # multithreading-socket
 
 Java application that opens a socket and restricts input to at most 5 concurrent clients.
