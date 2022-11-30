@@ -6,7 +6,9 @@
 
     <groupId>org.example</groupId>
     <artifactId>multithreading-socket</artifactId>
+    <name>multithreading-socket</name>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -28,9 +30,18 @@
     </dependencies>
 
     <properties>
+        <java.version>13</java.version>
         <maven.compiler.source>13</maven.compiler.source>
         <maven.compiler.target>13</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.0</version>
+            </plugin>
+        </plugins>
+    </build>
 </project>

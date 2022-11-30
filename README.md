@@ -29,17 +29,40 @@ The Application must write a de- duplicated list of these numbers to a log file 
 9. If any connected client writes a single line with only the word "terminate",
    the Application must disconnect all clients and perform a clean shutdown as quickly as possible.
 
+## Build, test
+
+```
+mvn clean install
+```
+
+## Running manually
+
+- Running the server
+
+```
+mvn exec:java -Dexec.mainClass="org.example.Main"
+```
+
+- Running a client
+
+```
+telnet localhost 4000
+    123456789
+    terminate
+```
+
+- Check log file:
+
+```
+cat /tmp/numbers.log
+```
+
 ## TODO:
 
-- [ ] Readme
-    - Build it
-    - Running test
-    - Explain manual step about how to run it.
 - [ ] Testing
-    - Performance
+    - Unit test
 - [ ] CI
 - [ ] Static analysis
-- [ ] Review synchronization between threads
 - [ ] Documentation
-    - Create a siteMap of the status of the threads 
+    - Create a siteMap of the status of the threads
     

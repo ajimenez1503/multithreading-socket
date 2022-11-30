@@ -334,7 +334,7 @@ public class IntegrationTest {
 
     // Performance test
     @Test
-    void givenServerAnd5Clients_whenSend2MNumbersIn10Sec_thenCheckStatistic() {
+    void givenServerAnd5Clients_whenSend2MNumbers_thenCheckStatistic() {
         // Given server
         Server server = new Server();
         assertNotNull(server);
@@ -368,8 +368,7 @@ public class IntegrationTest {
         }
 
         // Then check statistic
-        final int MAX_SEC = 10;
-        await().atMost(MAX_SEC, TimeUnit.SECONDS).until(() -> server.getStatistic().getUniqueTotal() == MAX_SEND * MAX_CLIENT);
+        await().atMost(1, TimeUnit.MINUTES).until(() -> server.getStatistic().getUniqueTotal() == MAX_SEND * MAX_CLIENT);
         assertEquals(0, server.getStatistic().getDuplicateTotal());
 
         // Close client and server
