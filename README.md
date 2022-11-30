@@ -60,10 +60,21 @@ telnet localhost 4000
 cat /tmp/numbers.log
 ```
 
+## CI (Continues Integration)
+
+![img.png](img/imgCI.png)
+
+- Using GitHub actions `.github/workflows/ci.yml`
+- Each time there is a push into master branch:
+  - Build 
+  - Test
+  - Static analysis with SonarCloud https://sonarcloud.io/project/overview?id=softwarejimenez_multithreading-socket
+
 ## TODO:
 
 - [ ] Testing
     - Unit test
 - [ ] Documentation
     - Create a siteMap of the status of the threads
+    - Add screenshot of static analysis tool
     
