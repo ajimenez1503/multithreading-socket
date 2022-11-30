@@ -213,9 +213,33 @@ class IntegrationTest {
         thread.interrupt();
     }
 
+    @Test
+    void givenServerAndClient_whenNotSendingANumber_thenClientIsShutDown() {
+        // Given server
+        Server server = new Server();
+        assertNotNull(server);
+        Runnable runnable = () -> {
+            server.start();
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
+
+        // Given client
+        Client client = new Client();
+
+        // When send number
+        Integer number = getRandomNumber(MIN_NUMBER, MAX_NUMBER);
+        client.send("aaaaaaaaa");
+        await().until(() -> client.getSocket().isConnected());
+
+        // Close client and server
+        client.shutdown();
+        server.shutdown();
+        thread.interrupt();
+    }
 
     @Test
-    void givenServerAndClient_whenSendTheSaneNumberTwice_thenDuplicateTotal1AndCheckLogFile() {
+    void givenServerAndClient_whenSendTheSameNumberTwice_thenDuplicateTotal1AndCheckLogFile() {
         // Given server
         Server server = new Server();
         assertNotNull(server);
