@@ -68,12 +68,14 @@ public class LoggingThread implements Runnable {
         try {
             out.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("ERROR: Could not close writer buffer");
+            System.out.println(e);
         }
         try {
             file.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("ERROR: Could not close file '" + FILE_NAME + "'");
+            System.out.println(e);
         }
     }
 
@@ -101,7 +103,8 @@ public class LoggingThread implements Runnable {
                         out.newLine();
                         out.flush();
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        System.out.println("ERROR: Could not write '" + number + "' into the file '" + FILE_NAME + "'");
+                        System.out.println(e);
                     }
 
                     bitSet.set(number);

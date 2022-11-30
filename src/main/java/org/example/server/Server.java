@@ -32,6 +32,8 @@ public class Server {
         try {
             serverSocket = new ServerSocket(PORT);
         } catch (IOException e) {
+            System.out.println("ERROR: Could not create a socket in the port '" + PORT + "'");
+            System.out.println(e);
             throw new RuntimeException(e);
         }
     }
@@ -75,7 +77,8 @@ public class Server {
         try {
             serverSocket.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("ERROR: Could not close socket");
+            System.out.println(e);
         }
 
         isShutDown = true;

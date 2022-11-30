@@ -15,7 +15,7 @@ public class SocketHandler implements Runnable {
     private BlockingQueue<Integer> blockingQueue;
     private Socket socket;
 
-    public SocketHandler(Socket socket, BlockingQueue<Integer> blockingQueue, Server server) {
+    public SocketHandler(Socket socket, BlockingQueue<Integer> blockingQueue, Server server) throws IOException {
         shutdown = false;
         this.socket = socket;
         this.blockingQueue = blockingQueue;
@@ -24,8 +24,40 @@ public class SocketHandler implements Runnable {
         try {
             in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("ERROR: Could not write in the socket");
+            System.out.println(e);
+            throw e;
         }
+    }
+
+    private boolean isTerminateCommand(String input) {
+        if (input.equals(TERMINATE_COMMAND)) {
+            System.out.println("INFO: '" + TERMINATE_COMMAND + "' has been requested");
+            shutdown();
+            server.shutdown();
+            return true;
+        }
+        return false;
+    }
+
+    private int getNumber(String input) throws Exception {
+        int inputNumber;
+
+        if (input.length() != EXPECTED_INPUT_LENGTH) {
+            shutdown();
+            throw new Exception("ERROR: Input '" + input + "' has a length different than " + EXPECTED_INPUT_LENGTH);
+        }
+        try {
+            inputNumber = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            shutdown();
+            throw new Exception("ERROR: Input '" + input + "' could not be parsed into string");
+        }
+        if (inputNumber < 0) {
+            shutdown();
+            throw new Exception("ERROR: Input '" + input + "' is negative");
+        }
+        return inputNumber;
     }
 
     @Override
@@ -40,27 +72,12 @@ public class SocketHandler implements Runnable {
                 throw new RuntimeException(e);
             }
             if (inputString != null) {
-                if (inputString.equals(TERMINATE_COMMAND)) {
-                    System.out.println("INFO: '" + TERMINATE_COMMAND + "' has been requested");
-                    shutdown();
-                    server.shutdown();
-                    return;
-                }
-                if (inputString.length() != EXPECTED_INPUT_LENGTH) {
-                    System.out.println("ERROR: Input '" + inputString + "' has a length different than " + EXPECTED_INPUT_LENGTH);
-                    shutdown();
+                if (isTerminateCommand(inputString)) {
                     return;
                 }
                 try {
-                    inputNumber = Integer.parseInt(inputString);
-                } catch (NumberFormatException e) {
-                    System.out.println("ERROR: Input '" + inputString + "' could not be parsed into string");
-                    shutdown();
-                    return;
-                }
-                if (inputNumber < 0) {
-                    System.out.println("ERROR: Input '" + inputString + "' is negative");
-                    shutdown();
+                    inputNumber = getNumber(inputString);
+                } catch (Exception e) {
                     return;
                 }
                 blockingQueue.add(inputNumber);
