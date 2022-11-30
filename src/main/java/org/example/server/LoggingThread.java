@@ -80,11 +80,9 @@ public class LoggingThread implements Runnable {
         currentThread = Thread.currentThread();
         Integer number;
         while (!currentThread.isInterrupted()) {
-            System.out.println("Take numbers from blockingQueue");
-
             try {
                 number = blockingQueue.take();
-                System.out.println("Take number from blockingQueue " + number);
+                // System.out.println("Take number from blockingQueue " + number);
             } catch (InterruptedException e) {
                 // It is expected with the thread is interrupted in the function shutdown()
                 System.out.println("INFO: The thread has been interrupted");

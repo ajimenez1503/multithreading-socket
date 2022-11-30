@@ -56,7 +56,7 @@ public class SocketHandler implements Runnable {
                 System.out.println("ERROR: Input '" + inputString + "' could not be parsed into string");
                 break;
             }
-            System.out.println("Add number to blockingQueue " + inputNumber);
+            // System.out.println("Add number to blockingQueue " + inputNumber);
             blockingQueue.add(inputNumber);
         }
         shutdown();
