@@ -6,13 +6,14 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.BitSet;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 
 public class LoggingThread implements Runnable {
 
-    private static final int WAIT = 10 * 100;
+    private static final int WAIT = 10 * 1000;
 
     private static final int MAX_NUMBER = 999999999;
 
@@ -39,7 +40,7 @@ public class LoggingThread implements Runnable {
         statistic = new Statistic();
 
         timer = new Timer();
-        timer.scheduleAtFixedRate(new Summary(), 0, WAIT);
+        timer.scheduleAtFixedRate(new Summary(), new Date(), WAIT);
 
         try {
             file = new FileWriter(FILE_NAME);
