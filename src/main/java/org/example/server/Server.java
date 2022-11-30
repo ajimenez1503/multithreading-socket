@@ -48,7 +48,8 @@ public class Server {
             } catch (IOException e) {
                 // If 'isShutDown' socket is already closed.
                 if (continueLoop && !isShutDown) {
-                    throw new RuntimeException(e);
+                    System.out.println("ERROR: Could not manage the socket");
+                    System.out.println(e);
                 }
                 return;
             }

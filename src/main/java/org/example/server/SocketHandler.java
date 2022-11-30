@@ -1,5 +1,7 @@
 package org.example.server;
 
+import org.example.server.exception.SocketInputException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -40,25 +42,26 @@ public class SocketHandler implements Runnable {
         return false;
     }
 
-    private int getNumber(String input) throws Exception {
+    private int getNumber(String input) throws SocketInputException {
         int inputNumber;
 
         if (input.length() != EXPECTED_INPUT_LENGTH) {
             shutdown();
-            throw new Exception("ERROR: Input '" + input + "' has a length different than " + EXPECTED_INPUT_LENGTH);
+            throw new SocketInputException("Input '" + input + "' has a length different than " + EXPECTED_INPUT_LENGTH);
         }
         try {
             inputNumber = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             shutdown();
-            throw new Exception("ERROR: Input '" + input + "' could not be parsed into string");
+            throw new SocketInputException("Input '" + input + "' could not be parsed into Integer");
         }
         if (inputNumber < 0) {
             shutdown();
-            throw new Exception("ERROR: Input '" + input + "' is negative");
+            throw new SocketInputException("Input '" + input + "' is negative");
         }
         return inputNumber;
     }
+
 
     @Override
     public void run() {
@@ -69,7 +72,10 @@ public class SocketHandler implements Runnable {
             try {
                 inputString = in.readLine();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                System.out.println("ERROR: could no read from the socket");
+                System.out.println(e);
+                shutdown();
+                return;
             }
             if (inputString != null) {
                 if (isTerminateCommand(inputString)) {
@@ -77,7 +83,9 @@ public class SocketHandler implements Runnable {
                 }
                 try {
                     inputNumber = getNumber(inputString);
-                } catch (Exception e) {
+                } catch (SocketInputException e) {
+                    System.out.println("ERROR: The input '" + inputString + " is not valid");
+                    System.out.println(e);
                     return;
                 }
                 blockingQueue.add(inputNumber);
@@ -92,7 +100,8 @@ public class SocketHandler implements Runnable {
             in.close();
             socket.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("ERROR: Could not close the socket");
+            System.out.println(e);
         }
     }
 }

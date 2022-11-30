@@ -64,8 +64,6 @@ cat /tmp/numbers.log
 
 - [ ] Testing
     - Unit test
-- [ ] CI
-- [ ] Static analysis
 - [ ] Documentation
     - Create a siteMap of the status of the threads
     
