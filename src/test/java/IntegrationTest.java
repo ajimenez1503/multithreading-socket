@@ -163,8 +163,7 @@ class IntegrationTest {
         thread.interrupt();
     }
 
-    @Test
-    void givenServerAndClient_whenSendingAMessageWithout9digits_thenClientIsShutDown() {
+    private void givenServerAndClient_whenSendingAInvalidMessage_thenClientIsShutDown(String message) {
         // Given server
         Server server = new Server();
         assertNotNull(server);
@@ -179,63 +178,33 @@ class IntegrationTest {
 
         // When send number
         Integer number = getRandomNumber(MIN_NUMBER, MAX_NUMBER);
-        client.send("invalid message");
+        client.send(message);
         await().until(() -> client.getSocket().isConnected());
 
         // Close client and server
         client.shutdown();
         server.shutdown();
         thread.interrupt();
+    }
+
+    @Test
+    void givenServerAndClient_whenSendingAMessageWithout9digits_thenClientIsShutDown() {
+        givenServerAndClient_whenSendingAInvalidMessage_thenClientIsShutDown("invalid message");
     }
 
     @Test
     void givenServerAndClient_whenSendingAnEmptyMessage_thenClientIsShutDown() {
-        // Given server
-        Server server = new Server();
-        assertNotNull(server);
-        Runnable runnable = () -> {
-            server.start();
-        };
-        Thread thread = new Thread(runnable);
-        thread.start();
-
-        // Given client
-        Client client = new Client();
-
-        // When send number
-        Integer number = getRandomNumber(MIN_NUMBER, MAX_NUMBER);
-        client.send("");
-        await().until(() -> client.getSocket().isConnected());
-
-        // Close client and server
-        client.shutdown();
-        server.shutdown();
-        thread.interrupt();
+        givenServerAndClient_whenSendingAInvalidMessage_thenClientIsShutDown("");
     }
 
     @Test
-    void givenServerAndClient_whenNotSendingANumber_thenClientIsShutDown() {
-        // Given server
-        Server server = new Server();
-        assertNotNull(server);
-        Runnable runnable = () -> {
-            server.start();
-        };
-        Thread thread = new Thread(runnable);
-        thread.start();
+    void givenServerAndClient_whenNotSendingANumberButItHas9Characters_thenClientIsShutDown() {
+        givenServerAndClient_whenSendingAInvalidMessage_thenClientIsShutDown("aaaaaaaaa");
+    }
 
-        // Given client
-        Client client = new Client();
-
-        // When send number
-        Integer number = getRandomNumber(MIN_NUMBER, MAX_NUMBER);
-        client.send("aaaaaaaaa");
-        await().until(() -> client.getSocket().isConnected());
-
-        // Close client and server
-        client.shutdown();
-        server.shutdown();
-        thread.interrupt();
+    @Test
+    void givenServerAndClient_whenSendingNegativeNumber_thenClientIsShutDown() {
+        givenServerAndClient_whenSendingAInvalidMessage_thenClientIsShutDown("-12345678");
     }
 
     @Test

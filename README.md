@@ -66,9 +66,9 @@ cat /tmp/numbers.log
 
 - Using GitHub actions `.github/workflows/ci.yml`
 - Each time there is a push into master branch:
-  - Build 
-  - Test
-  - Static analysis with SonarCloud https://sonarcloud.io/project/overview?id=softwarejimenez_multithreading-socket
+    - Build
+    - Test
+    - Static analysis with SonarCloud https://sonarcloud.io/project/overview?id=softwarejimenez_multithreading-socket
 
 ## TODO:
 

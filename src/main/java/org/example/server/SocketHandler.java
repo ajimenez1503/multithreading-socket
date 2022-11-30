@@ -47,17 +47,17 @@ public class SocketHandler implements Runnable {
 
         if (input.length() != EXPECTED_INPUT_LENGTH) {
             shutdown();
-            throw new SocketInputException("Input '" + input + "' has a length different than " + EXPECTED_INPUT_LENGTH);
+            throw new SocketInputException(input, " Length different than " + EXPECTED_INPUT_LENGTH);
         }
         try {
             inputNumber = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             shutdown();
-            throw new SocketInputException("Input '" + input + "' could not be parsed into Integer");
+            throw new SocketInputException(input, "Could not be parsed into Integer");
         }
         if (inputNumber < 0) {
             shutdown();
-            throw new SocketInputException("Input '" + input + "' is negative");
+            throw new SocketInputException(input, "Is a negative number '" + inputNumber + "'");
         }
         return inputNumber;
     }
