@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class IntegrationTest {
+class IntegrationTest {
 
     private final static int MAX_NUMBER = 999999999;
     private final static int MIN_NUMBER = 0;

@@ -68,7 +68,8 @@ public class Server {
                 executorService.shutdownNow();
             }
         } catch (InterruptedException e) {
-            executorService.shutdownNow();
+            System.out.println("WARN: thread '" + Thread.currentThread().getName() + "' was interrupted.");
+            Thread.currentThread().interrupt();
         }
 
         try {

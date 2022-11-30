@@ -59,7 +59,9 @@ public class LoggingThread implements Runnable {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                System.out.println("WARN: thread '" + Thread.currentThread().getName() + "' was interrupted.");
+                // Restore interrupted state...
+                Thread.currentThread().interrupt();
             }
         }
 
@@ -82,28 +84,29 @@ public class LoggingThread implements Runnable {
         while (!currentThread.isInterrupted()) {
             try {
                 number = blockingQueue.take();
-                // System.out.println("Take number from blockingQueue " + number);
             } catch (InterruptedException e) {
                 // It is expected with the thread is interrupted in the function shutdown()
                 System.out.println("INFO: The thread has been interrupted");
-                break;
+                runFunctionHasFinished = true;
+                // Restore interrupted state...
+                Thread.currentThread().interrupt();
+                return;
             }
             synchronized (lock) {
                 if (bitSet.get(number)) {
                     statistic.incrementDuplicate();
-                    continue;
-                }
+                } else {
+                    try {
+                        out.write(number.toString());
+                        out.newLine();
+                        out.flush();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
 
-                try {
-                    out.write(number.toString());
-                    out.newLine();
-                    out.flush();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    bitSet.set(number);
+                    statistic.incrementUnique();
                 }
-
-                bitSet.set(number);
-                statistic.incrementUnique();
             }
         }
         runFunctionHasFinished = true;

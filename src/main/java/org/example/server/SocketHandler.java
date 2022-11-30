@@ -39,25 +39,23 @@ public class SocketHandler implements Runnable {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            if (inputString == null) {
-                continue;
+            if (inputString != null) {
+                if (inputString.equals(TERMINATE_COMMAND)) {
+                    System.out.println("INFO: '" + TERMINATE_COMMAND + "' has been requested");
+                    server.shutdown();
+                    break;
+                }
+                if (inputString.length() != EXPECTED_INPUT_LENGTH) {
+                    System.out.println("ERROR: Input '" + inputString + "' has a length different than " + EXPECTED_INPUT_LENGTH);
+                    break;
+                }
+                inputNumber = Integer.parseInt(inputString);
+                if (inputNumber < 0) {
+                    System.out.println("ERROR: Input '" + inputString + "' could not be parsed into string");
+                    break;
+                }
+                blockingQueue.add(inputNumber);
             }
-            if (inputString.equals(TERMINATE_COMMAND)) {
-                System.out.println("INFO: '" + TERMINATE_COMMAND + "' has been requested");
-                server.shutdown();
-                break;
-            }
-            if (inputString.length() != EXPECTED_INPUT_LENGTH) {
-                System.out.println("ERROR: Input '" + inputString + "' has a length different than " + EXPECTED_INPUT_LENGTH);
-                break;
-            }
-            inputNumber = Integer.parseInt(inputString);
-            if (inputNumber < 0) {
-                System.out.println("ERROR: Input '" + inputString + "' could not be parsed into string");
-                break;
-            }
-            // System.out.println("Add number to blockingQueue " + inputNumber);
-            blockingQueue.add(inputNumber);
         }
         shutdown();
     }
