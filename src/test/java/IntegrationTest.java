@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IntegrationTest {
@@ -373,5 +374,19 @@ class IntegrationTest {
         for (Thread t : threadsClients) {
             t.interrupt();
         }
+    }
+
+    @Test
+    void givenServer_whenCreatingAnExtraService_thenExceptionPortIsInUse() {
+        // Given server
+        Server server1 = new Server();
+        assertNotNull(server1);
+
+        RuntimeException exception = assertThrows(java.lang.RuntimeException.class, () -> {
+            new Server();
+        });
+        assertEquals("java.net.BindException: Address already in use", exception.getMessage());
+
+        server1.shutdown();
     }
 }

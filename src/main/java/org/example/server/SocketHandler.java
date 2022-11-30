@@ -74,8 +74,7 @@ public class SocketHandler implements Runnable {
             } catch (IOException e) {
                 System.out.println("ERROR: could no read from the socket");
                 System.out.println(e);
-                shutdown();
-                return;
+                break;
             }
             if (inputString != null) {
                 if (isTerminateCommand(inputString)) {

@@ -4,11 +4,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@Getter
 public class Statistic {
     private int uniqueCount;
+    @Getter
     private int uniqueTotal;
     private int duplicateCount;
+    @Getter
     private int duplicateTotal;
 
     public void incrementUnique() {

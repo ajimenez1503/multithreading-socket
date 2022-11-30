@@ -13,10 +13,11 @@ import java.util.concurrent.BlockingQueue;
 public class LoggingThread implements Runnable {
 
     private static final int WAIT = 10 * 100;
+
+    private static final int MAX_NUMBER = 999999999;
+
     private static final String FILE_NAME = "/tmp/numbers.log";
     private final Object lock;
-
-    private volatile boolean runFunctionHasFinished;
 
     private BitSet bitSet;
     private BlockingQueue<Integer> blockingQueue;
@@ -32,8 +33,7 @@ public class LoggingThread implements Runnable {
 
     public LoggingThread(BlockingQueue<Integer> blockingQueue) {
         lock = new Object();
-        runFunctionHasFinished = false;
-        bitSet = new BitSet(1000000000);
+        bitSet = new BitSet(MAX_NUMBER + 1);
         this.blockingQueue = blockingQueue;
 
         statistic = new Statistic();
@@ -44,25 +44,15 @@ public class LoggingThread implements Runnable {
         try {
             file = new FileWriter(FILE_NAME);
         } catch (Exception e) {
-            e.getStackTrace();
+            throw new RuntimeException(e);
         }
 
         out = new BufferedWriter(file);
     }
 
     public void shutdown() {
-        currentThread.interrupt();
-        timer.cancel();
-
-        // Not close the file until the run() function has finish
-        while (!runFunctionHasFinished) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                System.out.println("WARN: thread '" + Thread.currentThread().getName() + "' was interrupted.");
-                // Restore interrupted state...
-                Thread.currentThread().interrupt();
-            }
+        if (currentThread != null) {
+            currentThread.interrupt();
         }
 
         try {
@@ -89,7 +79,6 @@ public class LoggingThread implements Runnable {
             } catch (InterruptedException e) {
                 // It is expected with the thread is interrupted in the function shutdown()
                 System.out.println("INFO: The thread has been interrupted");
-                runFunctionHasFinished = true;
                 // Restore interrupted state...
                 Thread.currentThread().interrupt();
                 return;
@@ -112,7 +101,6 @@ public class LoggingThread implements Runnable {
                 }
             }
         }
-        runFunctionHasFinished = true;
     }
 
     final class Summary extends TimerTask {
