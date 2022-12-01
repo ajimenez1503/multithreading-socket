@@ -10,14 +10,14 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
+import java.util.logging.Logger;
 
 public class LoggingThread implements Runnable {
 
     private static final int WAIT = 10 * 1000;
-
     private static final int MAX_NUMBER = 999999999;
-
     private static final String FILE_NAME = "/tmp/numbers.log";
+    static Logger log = Logger.getLogger(LoggingThread.class.getName());
     private final Object lock;
 
     private BitSet bitSet;
@@ -61,14 +61,12 @@ public class LoggingThread implements Runnable {
         try {
             out.close();
         } catch (IOException e) {
-            System.out.println("ERROR: Could not close writer buffer");
-            System.out.println(e);
+            log.severe("Could not close writer buffer. Exception: " + e);
         }
         try {
             file.close();
         } catch (IOException e) {
-            System.out.println("ERROR: Could not close file '" + FILE_NAME + "'");
-            System.out.println(e);
+            log.severe("Could not close file '\" + FILE_NAME + \"'. Exception: " + e);
         }
     }
 
@@ -81,7 +79,7 @@ public class LoggingThread implements Runnable {
                 number = blockingQueue.take();
             } catch (InterruptedException e) {
                 // It is expected with the thread is interrupted in the function shutdown()
-                System.out.println("INFO: The thread has been interrupted");
+                log.info("The thread has been interrupted");
                 // Restore interrupted state...
                 Thread.currentThread().interrupt();
                 return;
@@ -95,8 +93,7 @@ public class LoggingThread implements Runnable {
                         out.newLine();
                         out.flush();
                     } catch (IOException e) {
-                        System.out.println("ERROR: Could not write '" + number + "' into the file '" + FILE_NAME + "'");
-                        System.out.println(e);
+                        log.severe("Could not write '\" + number + \"' into the file '\" + FILE_NAME + \"'. Exception: " + e);
                     }
 
                     bitSet.set(number);

@@ -9,10 +9,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class Server {
     private static final int PORT = 4000;
     private static final int MAX_CLIENTS = 5;
+    static Logger log = Logger.getLogger(Server.class.getName());
     private BlockingQueue<Integer> blockingQueue;
     private ExecutorService executorService;
     private ServerSocket serverSocket;
@@ -32,8 +34,7 @@ public class Server {
         try {
             serverSocket = new ServerSocket(PORT);
         } catch (IOException e) {
-            System.out.println("ERROR: Could not create a socket in the port '" + PORT + "'");
-            System.out.println(e);
+            log.severe("Could not create a socket in the port '\" + PORT + \"'. Exception: " + e);
             throw new RuntimeException(e);
         }
     }
@@ -48,8 +49,7 @@ public class Server {
             } catch (IOException e) {
                 // If 'isShutDown' socket is already closed.
                 if (continueLoop && !isShutDown) {
-                    System.out.println("ERROR: Could not manage the socket");
-                    System.out.println(e);
+                    log.severe("Could not manage the socket. Exception: " + e);
                 }
                 return;
             }
@@ -71,15 +71,14 @@ public class Server {
                 executorService.shutdownNow();
             }
         } catch (InterruptedException e) {
-            System.out.println("WARN: thread '" + Thread.currentThread().getName() + "' was interrupted.");
+            log.warning("Thread '" + Thread.currentThread().getName() + "' was interrupted.");
             Thread.currentThread().interrupt();
         }
 
         try {
             serverSocket.close();
         } catch (IOException e) {
-            System.out.println("ERROR: Could not close socket");
-            System.out.println(e);
+            log.severe("Could not close the socket. Exception: " + e);
         }
 
         isShutDown = true;

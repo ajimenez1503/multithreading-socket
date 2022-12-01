@@ -362,7 +362,7 @@ class IntegrationTest {
         }
 
         // Then check statistic
-        await().atMost(1, TimeUnit.MINUTES).until(() -> server.getStatistic().getUniqueTotal() == MAX_SEND * MAX_CLIENT);
+        await().atMost(3, TimeUnit.MINUTES).until(() -> server.getStatistic().getUniqueTotal() == MAX_SEND * MAX_CLIENT);
         assertEquals(0, server.getStatistic().getDuplicateTotal());
 
         // Close client and server

@@ -7,18 +7,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
+import java.util.logging.Logger;
 
 public class SocketHandler implements Runnable {
     private static final String TERMINATE_COMMAND = "terminate";
     private static final int EXPECTED_INPUT_LENGTH = 9;
+    static Logger log = Logger.getLogger(SocketHandler.class.getName());
     private final Server server;
     BufferedReader in;
-    private volatile boolean shutdown;
+    private volatile boolean isShutDown;
     private BlockingQueue<Integer> blockingQueue;
     private Socket socket;
 
     public SocketHandler(Socket socket, BlockingQueue<Integer> blockingQueue, Server server) throws IOException {
-        shutdown = false;
+        isShutDown = false;
         this.socket = socket;
         this.blockingQueue = blockingQueue;
         this.server = server;
@@ -26,15 +28,14 @@ public class SocketHandler implements Runnable {
         try {
             in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         } catch (IOException e) {
-            System.out.println("ERROR: Could not write in the socket");
-            System.out.println(e);
+            log.severe("Could not write in the socket. Exception: " + e);
             throw e;
         }
     }
 
     private boolean isTerminateCommand(String input) {
         if (input.equals(TERMINATE_COMMAND)) {
-            System.out.println("INFO: '" + TERMINATE_COMMAND + "' has been requested");
+            log.info("'" + TERMINATE_COMMAND + "' has been requested");
             shutdown();
             server.shutdown();
             return true;
@@ -68,12 +69,11 @@ public class SocketHandler implements Runnable {
         String inputString;
         int inputNumber;
 
-        while (!shutdown) {
+        while (!isShutDown) {
             try {
                 inputString = in.readLine();
             } catch (IOException e) {
-                System.out.println("ERROR: could no read from the socket");
-                System.out.println(e);
+                log.severe("Could no read from the socket. Exception: " + e);
                 break;
             }
             if (inputString != null) {
@@ -83,8 +83,7 @@ public class SocketHandler implements Runnable {
                 try {
                     inputNumber = getNumber(inputString);
                 } catch (SocketInputException e) {
-                    System.out.println("ERROR: The input '" + inputString + " is not valid");
-                    System.out.println(e);
+                    log.severe("The input '\" + inputString + \" is not valid. Exception: " + e);
                     return;
                 }
                 blockingQueue.add(inputNumber);
@@ -94,13 +93,12 @@ public class SocketHandler implements Runnable {
     }
 
     private void shutdown() {
-        shutdown = true;
+        isShutDown = true;
         try {
             in.close();
             socket.close();
         } catch (IOException e) {
-            System.out.println("ERROR: Could not close the socket");
-            System.out.println(e);
+            log.severe("Could not close the socket. Exception: " + e);
         }
     }
 }
