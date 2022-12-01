@@ -28,6 +28,7 @@ public class SocketHandler implements Runnable {
         try {
             in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         } catch (IOException e) {
+            log.severe("Could not write in the socket. Exception: " + e);
             throw e;
         }
     }
