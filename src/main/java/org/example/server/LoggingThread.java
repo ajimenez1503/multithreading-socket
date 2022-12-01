@@ -19,10 +19,8 @@ public class LoggingThread implements Runnable {
     private static final String FILE_NAME = "/tmp/numbers.log";
     static Logger log = Logger.getLogger(LoggingThread.class.getName());
     private final Object lock;
-
     private BitSet bitSet;
     private BlockingQueue<Integer> blockingQueue;
-
     @Getter
     private Statistic statistic;
     private Timer timer;
@@ -32,11 +30,16 @@ public class LoggingThread implements Runnable {
     //  currentThread will be initialized in the run() function
     private Thread currentThread;
 
+    /**
+     * Constructor
+     * - Create a timer for printing the statistic
+     * - Create a bitset in order to check if a number is duplicated
+     * - Open the file
+     */
     public LoggingThread(BlockingQueue<Integer> blockingQueue) {
         lock = new Object();
         bitSet = new BitSet(MAX_NUMBER + 1);
         this.blockingQueue = blockingQueue;
-
         statistic = new Statistic();
 
         timer = new Timer();
@@ -47,29 +50,16 @@ public class LoggingThread implements Runnable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
         out = new BufferedWriter(file);
     }
 
-    public void shutdown() {
-        timer.cancel();
-
-        if (currentThread != null) {
-            currentThread.interrupt();
-        }
-
-        try {
-            out.close();
-        } catch (IOException e) {
-            log.severe("Could not close writer buffer. Exception: " + e);
-        }
-        try {
-            file.close();
-        } catch (IOException e) {
-            log.severe("Could not close file '" + FILE_NAME + "'. Exception: " + e);
-        }
-    }
-
+    /**
+     * Thread run:
+     * - Get a number from the blocking thread
+     * - In a critical section:
+     * - Check if the number is duplicated
+     * - Write the number in the file.
+     */
     @Override
     public void run() {
         currentThread = Thread.currentThread();
@@ -100,6 +90,25 @@ public class LoggingThread implements Runnable {
                     statistic.incrementUnique();
                 }
             }
+        }
+    }
+
+    public void shutdown() {
+        timer.cancel();
+
+        if (currentThread != null) {
+            currentThread.interrupt();
+        }
+
+        try {
+            out.close();
+        } catch (IOException e) {
+            log.severe("Could not close writer buffer. Exception: " + e);
+        }
+        try {
+            file.close();
+        } catch (IOException e) {
+            log.severe("Could not close file '" + FILE_NAME + "'. Exception: " + e);
         }
     }
 

@@ -9,17 +9,17 @@ import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
 
-public class SocketHandler implements Runnable {
+public class SocketThread implements Runnable {
+    static Logger log = Logger.getLogger(SocketThread.class.getName());
     private static final String TERMINATE_COMMAND = "terminate";
     private static final int EXPECTED_INPUT_LENGTH = 9;
-    static Logger log = Logger.getLogger(SocketHandler.class.getName());
-    private final Server server;
-    BufferedReader in;
     private volatile boolean isShutDown;
+    private final Server server;
+    private BufferedReader in;
     private BlockingQueue<Integer> blockingQueue;
     private Socket socket;
 
-    public SocketHandler(Socket socket, BlockingQueue<Integer> blockingQueue, Server server) throws IOException {
+    public SocketThread(Socket socket, BlockingQueue<Integer> blockingQueue, Server server) throws IOException {
         isShutDown = false;
         this.socket = socket;
         this.blockingQueue = blockingQueue;
@@ -63,7 +63,12 @@ public class SocketHandler implements Runnable {
         return inputNumber;
     }
 
-
+    /**
+     * Thread run:
+     * - Read from the socket
+     * - Parse the input into a number
+     * - Add the number into the queue
+     */
     @Override
     public void run() {
         String inputString;

@@ -32,6 +32,46 @@ The Application must write a de- duplicated list of these numbers to a log file 
 9. If any connected client writes a single line with only the word "terminate",
    the Application must disconnect all clients and perform a clean shutdown as quickly as possible.
 
+## Documentation - Application main flows
+
+- The system is organized in 8 threads with are working at the same time.
+  ![img.png](img/imgThread.png)
+- Those threads share the blocking queue.
+
+#### Receive a digit
+
+- SOCKET_THREAD:
+    - Socket receive data
+    - Parse and validate data
+    - Add number into queue
+- LOGGING_THREAD
+    - Get number from queue
+    - Check if duplicate
+    - Write into output file
+    - Update statistic
+
+#### Receive "TERMINATE" command
+
+- SOCKET_THREAD:
+    - Socket receive data
+    - Check if  "TERMINATE" command
+- MAIN_THREAD - SERVER
+    - Shutdown
+        - Shutdown the LOGGING_THREAD
+        - Interrupt the SOCKET_THREAD
+        - Close socket
+- LOGGING_THREAD
+    - Shutdown
+        - Interrupt the thread
+        - Stop timer
+        - Close file
+
+### Log statistic
+
+- TIMER_THREAD
+    - Wake up every 10 seconds
+    - Log statistic
+
 ## Build, test
 
 ```
@@ -69,12 +109,11 @@ cat /tmp/numbers.log
     - Build
     - Test
     - Static analysis with SonarCloud https://sonarcloud.io/project/overview?id=softwarejimenez_multithreading-socket
+      ![img.png](img/imgCodeSonar.png)
 
 ## TODO:
 
-- [ ] Testing
-    - Unit test
-- [ ] Documentation
-    - Create a siteMap of the status of the threads
-    - Add screenshot of static analysis tool
+- [ ] Extra unit test
+- [ ] Extra logging
+- [ ] Extra documentation
     
