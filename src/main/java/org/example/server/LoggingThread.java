@@ -52,6 +52,8 @@ public class LoggingThread implements Runnable {
     }
 
     public void shutdown() {
+        timer.cancel();
+
         if (currentThread != null) {
             currentThread.interrupt();
         }
