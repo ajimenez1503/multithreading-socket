@@ -34,7 +34,7 @@ public class Server {
         try {
             serverSocket = new ServerSocket(PORT);
         } catch (IOException e) {
-            log.severe("Could not create a socket in the port '\" + PORT + \"'. Exception: " + e);
+            log.severe("Could not create a socket in the port '" + PORT + "'. Exception: " + e);
             throw new RuntimeException(e);
         }
     }

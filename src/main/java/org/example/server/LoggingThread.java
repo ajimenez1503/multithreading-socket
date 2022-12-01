@@ -66,7 +66,7 @@ public class LoggingThread implements Runnable {
         try {
             file.close();
         } catch (IOException e) {
-            log.severe("Could not close file '\" + FILE_NAME + \"'. Exception: " + e);
+            log.severe("Could not close file '" + FILE_NAME + "'. Exception: " + e);
         }
     }
 
@@ -93,7 +93,7 @@ public class LoggingThread implements Runnable {
                         out.newLine();
                         out.flush();
                     } catch (IOException e) {
-                        log.severe("Could not write '\" + number + \"' into the file '\" + FILE_NAME + \"'. Exception: " + e);
+                        log.severe("Could not write '" + number + "' into the file '" + FILE_NAME + "'. Exception: " + e);
                     }
 
                     bitSet.set(number);

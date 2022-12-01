@@ -44,7 +44,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.0</version>
                 <configuration>
-                    <argLine>-Xms8192m -Xmx8192m</argLine>
+                    <argLine>@{argLine} -Xms8192m -Xmx8192m</argLine>
                 </configuration>
             </plugin>
             <plugin>

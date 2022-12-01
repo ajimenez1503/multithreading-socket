@@ -28,7 +28,6 @@ public class SocketHandler implements Runnable {
         try {
             in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         } catch (IOException e) {
-            log.severe("Could not write in the socket. Exception: " + e);
             throw e;
         }
     }
@@ -83,7 +82,7 @@ public class SocketHandler implements Runnable {
                 try {
                     inputNumber = getNumber(inputString);
                 } catch (SocketInputException e) {
-                    log.severe("The input '\" + inputString + \" is not valid. Exception: " + e);
+                    log.severe("The input '" + inputString + "' is not valid. Exception: " + e);
                     return;
                 }
                 blockingQueue.add(inputNumber);
