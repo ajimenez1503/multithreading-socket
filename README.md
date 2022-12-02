@@ -112,8 +112,5 @@ cat /tmp/numbers.log
       ![img.png](img/imgCodeSonar.png)
 
 ## TODO:
-
-- [ ] Extra unit test
-- [ ] Extra logging
 - [ ] Extra documentation
     

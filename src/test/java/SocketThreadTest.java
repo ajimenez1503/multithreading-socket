@@ -26,7 +26,7 @@ public class SocketThreadTest {
     private Server server;
 
     @Test
-    void givenSocketThread_whenReceiveNumbers_thenCheckBlockingQueue() throws IOException, InterruptedException {
+    void givenSocketThread_whenReceiveANumber_thenCheckBlockingQueue() throws IOException, InterruptedException {
         Integer number = 123456789;
         BlockingQueue<Integer> blockingQueue = new LinkedBlockingQueue<>();
         InputStream anyInputStream = new ByteArrayInputStream(number.toString().getBytes());
