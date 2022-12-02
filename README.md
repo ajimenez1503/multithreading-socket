@@ -74,6 +74,8 @@ The Application must write a de- duplicated list of these numbers to a log file 
 
 ## Build, test
 
+Note: using Java 13
+
 ```
 mvn clean install
 ```
@@ -112,5 +114,6 @@ cat /tmp/numbers.log
       ![img.png](img/imgCodeSonar.png)
 
 ## TODO:
+
 - [ ] Extra documentation
     
