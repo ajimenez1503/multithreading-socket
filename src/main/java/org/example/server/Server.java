@@ -12,9 +12,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class Server {
-    static Logger log = Logger.getLogger(Server.class.getName());
     private static final int PORT = 4000;
     private static final int MAX_CLIENTS = 5;
+    static Logger log = Logger.getLogger(Server.class.getName());
     private BlockingQueue<Integer> blockingQueue;
     private ExecutorService executorService;
     private ServerSocket serverSocket;

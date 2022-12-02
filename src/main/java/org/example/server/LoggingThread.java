@@ -29,6 +29,8 @@ public class LoggingThread implements Runnable {
 
     //  currentThread will be initialized in the run() function
     private Thread currentThread;
+    @Getter
+    private boolean isShutDown;
 
     /**
      * Constructor
@@ -37,6 +39,7 @@ public class LoggingThread implements Runnable {
      * - Open the file
      */
     public LoggingThread(BlockingQueue<Integer> blockingQueue) {
+        isShutDown = false;
         lock = new Object();
         bitSet = new BitSet(MAX_NUMBER + 1);
         this.blockingQueue = blockingQueue;
@@ -110,6 +113,7 @@ public class LoggingThread implements Runnable {
         } catch (IOException e) {
             log.severe("Could not close file '" + FILE_NAME + "'. Exception: " + e);
         }
+        isShutDown = true;
     }
 
     final class Summary extends TimerTask {

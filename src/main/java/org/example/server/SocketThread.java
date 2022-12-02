@@ -1,5 +1,6 @@
 package org.example.server;
 
+import lombok.Getter;
 import org.example.server.exception.SocketInputException;
 
 import java.io.BufferedReader;
@@ -10,11 +11,12 @@ import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
 
 public class SocketThread implements Runnable {
-    static Logger log = Logger.getLogger(SocketThread.class.getName());
     private static final String TERMINATE_COMMAND = "terminate";
     private static final int EXPECTED_INPUT_LENGTH = 9;
-    private volatile boolean isShutDown;
+    static Logger log = Logger.getLogger(SocketThread.class.getName());
     private final Server server;
+    @Getter
+    private volatile boolean isShutDown;
     private BufferedReader in;
     private BlockingQueue<Integer> blockingQueue;
     private Socket socket;
