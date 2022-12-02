@@ -12,7 +12,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class LoggingThreadTest {
+class LoggingThreadTest {
 
     private static final String FILE_NAME = "/tmp/numbers.log";
     private FileReader file;

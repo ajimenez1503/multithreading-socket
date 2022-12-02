@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SocketThreadTest {
+class SocketThreadTest {
     private static final String TERMINATE_COMMAND = "terminate";
     @Mock
     private Socket socket;
